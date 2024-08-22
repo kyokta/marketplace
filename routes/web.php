@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +17,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::prefix('seller')->name('seller.')->group(function () {
+    Route::get('/', [ProductController::class, 'index'])->name('dashboard');
+    Route::get('/product', [ProductController::class, 'getProduct'])->name('product');
+    Route::get('/order', [OrderController::class, 'getOrder'])->name('order');
 });
