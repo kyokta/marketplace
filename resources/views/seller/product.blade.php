@@ -1,4 +1,4 @@
-@extends('layout.index')
+@extends('seller.layout')
 
 @section('content')
 <div class="container mx-auto p-4">

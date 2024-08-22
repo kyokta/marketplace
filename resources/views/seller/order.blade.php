@@ -1,4 +1,4 @@
-@extends('layout.index')
+@extends('seller.layout')
 
 @section('content')
 <div class="mx-auto p-4 flex flex-col gap-4">
