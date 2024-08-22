@@ -24,15 +24,8 @@
 </head>
 
 <body>
-    <div class="flex h-screen bg-gray-100">
-        @include('layout.sidebar')
-        <div id="main-content" class="flex flex-col w-full">
-            @include('layout.navbar')
-            <main class="flex-1 bg-white p-4">
-                @yield('content')
-            </main>
-        </div>
-    </div>
+    @yield('body')
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
     $(document).ready(function() {

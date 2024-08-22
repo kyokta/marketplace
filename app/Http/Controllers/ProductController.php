@@ -8,10 +8,10 @@ class ProductController extends Controller
 {
     public function index()
     {
-        return view('product.index');
+        return view('seller.dashboard');
     }
     public function getProduct()
     {
-        return view('product.product');
+        return view('seller.product');
     }
 }
