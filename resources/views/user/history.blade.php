@@ -18,28 +18,30 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($history as $index => $item)
                 <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-center">MKT0{{ $item['id'] }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">MKT0{{ $item->id }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-center">
-                        {{ date_format(date_create($item['created_at']), 'd F Y') }}
+                        {{ date_format(date_create($item->created_at), 'd F Y') }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-center">
-                        {{ number_format($item['total_amount'], 0, ',', '.') }}
+                        {{ number_format($item->total_amount, 0, ',', '.') }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-center">
-                        @if($item['status'] == 'completed')
+                        @if($item->status == 'completed')
                         <span class="text-green-500 px-2 py-1 rounded-full text-sm font-medium">Completed</span>
-                        @elseif($item['status'] == 'pending')
-                        <span class=" text-yellow-500 px-2 py-1 rounded-full text-sm font-medium">Pending</span>
-                        @elseif($item['status'] == 'cancelled' || $item['status'] == 'failed')
-                        <span class=" text-red-500 px-2 py-1 rounded-full text-sm font-medium">Cancelled / Failed</span>
+                        @elseif($item->status == 'pending')
+                        <span class="text-yellow-500 px-2 py-1 rounded-full text-sm font-medium">Pending</span>
+                        @elseif($item->status == 'processed')
+                        <span class="text-blue-500 px-2 py-1 rounded-full text-sm font-medium">Processed</span>
+                        @elseif($item->status == 'cancelled')
+                        <span class="text-red-500 px-2 py-1 rounded-full text-sm font-medium">Cancelled</span>
                         @else
-                        <span class=" text-gray-500 px-2 py-1 rounded-full text-sm font-medium">Unknown</span>
+                        <span class="text-gray-500 px-2 py-1 rounded-full text-sm font-medium">Unknown</span>
                         @endif
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap text-center">
                         <a href="#" class="text-blue-600 hover:text-blue-800 view-details"
-                            data-id="{{ $item['id'] }}">Details Product</a>
+                            data-id="{{ $item->id }}">Details Product</a>
                     </td>
 
                 </tr>

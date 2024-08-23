@@ -29,11 +29,14 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('seller')->name('seller.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('dashboard');
         Route::get('/product', [ProductController::class, 'getProduct'])->name('product');
+        Route::get('/product', [ProductController::class, 'getProduct'])->name('product');
+        Route::get('/product/{id}', [ProductController::class, 'detailProduct'])->name('detailProduct');
         Route::post('/product', [ProductController::class, 'storeProduct'])->name('storeProduct');
-        Route::get('/seller/products/{id}/edit', [ProductController::class, 'editProduct'])->name('seller.editProduct');
-        Route::put('/seller/products/{id}', [ProductController::class, 'updateProduct'])->name('seller.updateProduct');
+        Route::put('/seller/products/{id}', [ProductController::class, 'updateProduct'])->name('updateProduct');
         Route::delete('/product/{id}', [ProductController::class, 'deleteProduct'])->name('deleteProduct');
         Route::get('/order', [OrderController::class, 'getOrder'])->name('order');
+        Route::get('/order/detail/{id}', [OrderController::class, 'detailOrder'])->name('detailOrder');
+        Route::put('/order/update/{id}', [OrderController::class, 'updateOrder'])->name('updateOrder');
     });
 
     Route::prefix('/')->name('home.')->group(function () {

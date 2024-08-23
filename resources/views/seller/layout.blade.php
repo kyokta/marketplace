@@ -46,8 +46,6 @@
                 </button>
 
                 <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300">Profile</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300">Settings</a>
                     <form action="{{ route('logout') }}" method="POST" class="block px-4 py-2 hover:bg-gray-300">
                         @csrf
                         <button type="submit" class="w-full text-left text-sm text-gray-700">Logout</button>
@@ -64,21 +62,21 @@
 
 @push('script')
 <script>
-$(document).ready(function() {
-    $('#btnSidebar').on('click', function() {
-        $('#sidebar').toggleClass('hidden');
-    });
+    $(document).ready(function() {
+        $('#btnSidebar').on('click', function() {
+            $('#sidebar').toggleClass('hidden');
+        });
 
-    $('#user-menu-button').on('click', function(event) {
-        event.stopPropagation();
-        $('#user-dropdown').toggleClass('hidden');
-    });
+        $('#user-menu-button').on('click', function(event) {
+            event.stopPropagation();
+            $('#user-dropdown').toggleClass('hidden');
+        });
 
-    $(document).on('click', function(event) {
-        if (!$(event.target).closest('#user-menu-button, #user-dropdown').length) {
-            $('#user-dropdown').addClass('hidden');
-        }
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('#user-menu-button, #user-dropdown').length) {
+                $('#user-dropdown').addClass('hidden');
+            }
+        });
     });
-});
 </script>
 @endpush

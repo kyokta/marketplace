@@ -35,4 +35,9 @@ class Product extends Model
     {
         return $this->hasMany(DetailCheckout::class);
     }
+
+    public function detailOrders()
+    {
+        return $this->hasMany(DetailOrder::class, 'product_id');
+    }
 }
