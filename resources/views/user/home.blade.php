@@ -108,6 +108,15 @@ $(document).ready(function() {
         $('#modalProductDescription').text(productDescription);
         $('#modalProductImageContainer').css('background-image', `url(${productImage})`);
 
+        const addToCartBtn = $('.addToCartBtn');
+        if (productStock <= 0) {
+            addToCartBtn.prop('disabled', true);
+            addToCartBtn.removeClass('bg-gray-700 hover:bg-gray-600').addClass('bg-gray-300');
+        } else {
+            addToCartBtn.prop('disabled', false);
+            addToCartBtn.removeClass('bg-gray-300 hover:bg-gray-600').addClass('bg-gray-700');
+        }
+
         $('#detailProduct').addClass('flex');
         $('#detailProduct').removeClass('hidden');
     });

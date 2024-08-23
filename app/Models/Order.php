@@ -17,4 +17,14 @@ class Order extends Model
         'total_amount',
         'status'
     ];
+
+    public function detailOrders()
+    {
+        return $this->hasMany(DetailOrder::class);
+    }
+
+    public function checkout()
+    {
+        return $this->belongsTo(Checkout::class, 'checkout_id');
+    }
 }

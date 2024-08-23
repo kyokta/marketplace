@@ -163,7 +163,11 @@ $(document).ready(function() {
         let selectedItems = [];
         $('.item-checkbox:checked').each(function() {
             let cartId = $(this).closest('tr').find('.quantity-input').data('id');
-            selectedItems.push(cartId);
+            let quantity = $(this).closest('tr').find('.quantity-input').val();
+            selectedItems.push({
+                id: cartId,
+                quantity: quantity
+            });
         });
 
         if (selectedItems.length === 0) {
@@ -180,7 +184,7 @@ $(document).ready(function() {
             type: 'POST',
             data: {
                 _token: '{{ csrf_token() }}',
-                cartIds: selectedItems,
+                items: selectedItems,
             },
             success: function(response) {
                 if (response.success) {
@@ -200,14 +204,23 @@ $(document).ready(function() {
                 }
             },
             error: function(xhr) {
+                let errorMessage = 'There was an error processing the checkout.';
+
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                } else if (xhr.responseText) {
+                    errorMessage = xhr.responseText;
+                }
+
                 Swal.fire(
                     'Failed!',
-                    'There was an error processing the checkout.',
+                    errorMessage,
                     'error'
                 );
             }
         });
     });
+
 
 });
 </script>

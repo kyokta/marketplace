@@ -15,12 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('seller_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('checkout_id')->constrained()->onDelete('cascade');
-            $table->foreignId('customer_id')->constrained('users')->onDelete('cascade');
-            $table->string('name');
-            $table->text('address');
-            $table->string('phone');
             $table->decimal('total_amount', 15, 2);
-            $table->enum('status', ['pending', 'completed', 'canceled']);
+            $table->enum('status', ['processed', 'pending', 'completed', 'cancelled']);
             $table->timestamps();
         });
     }
