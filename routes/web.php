@@ -6,6 +6,7 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Models\Cart;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,23 +20,38 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [AuthController::class, 'login'])->name('login');
+Route::get('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/login', [AuthController::class, 'loginStore'])->name('login.store');
 Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/register', [AuthController::class, 'registerStore'])->name('register.store');
 
-Route::prefix('seller')->name('seller.')->group(function () {
-    Route::get('/', [ProductController::class, 'index'])->name('dashboard');
-    Route::get('/product', [ProductController::class, 'getProduct'])->name('product');
-    Route::get('/order', [OrderController::class, 'getOrder'])->name('order');
-});
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('seller')->name('seller.')->group(function () {
+        Route::get('/', [ProductController::class, 'index'])->name('dashboard');
+        Route::get('/product', [ProductController::class, 'getProduct'])->name('product');
+        Route::post('/product', [ProductController::class, 'storeProduct'])->name('storeProduct');
+        Route::get('/seller/products/{id}/edit', [ProductController::class, 'editProduct'])->name('seller.editProduct');
+        Route::put('/seller/products/{id}', [ProductController::class, 'updateProduct'])->name('seller.updateProduct');
+        Route::delete('/product/{id}', [ProductController::class, 'deleteProduct'])->name('deleteProduct');
+        Route::get('/order', [OrderController::class, 'getOrder'])->name('order');
+    });
 
-Route::prefix('home')->name('home.')->group(function () {
-    Route::get('/', [HomeController::class, 'index'])->name('dashboard');
-});
+    Route::prefix('/')->name('home.')->group(function () {
+        Route::get('/', [HomeController::class, 'index'])->name('dashboard');
+        Route::get('/detail/{id}', [HomeController::class, 'detail'])->name('detail');
+    });
 
-Route::prefix('cart')->name('cart.')->group(function () {
-    Route::get('/', [CartController::class, 'index'])->name('dashboard');
-});
+    Route::prefix('cart')->name('cart.')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('dashboard');
+        Route::post('/', [CartController::class, 'storeCart'])->name('store');
+        Route::delete('/{id}', [CartController::class, 'deleteChart'])->name('delete');
+    });
 
-Route::prefix('history')->name('history.')->group(function () {
-    Route::get('/', [HistoryController::class, 'index'])->name('dashboard');
+    Route::prefix('history')->name('history.')->group(function () {
+        Route::get('/', [HistoryController::class, 'index'])->name('dashboard');
+        Route::post('/', [HistoryController::class, 'checkout'])->name('checkout');
+        Route::get('/detail/{id}', [HistoryController::class, 'detailCheckout'])->name('detail');
+    });
+
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

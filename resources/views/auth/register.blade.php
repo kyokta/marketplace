@@ -4,42 +4,41 @@
 <div class="h-full w-full flex items-center justify-center bg-gray-100">
     <div class="w-[80%] max-h-[80%] bg-white p-8 rounded-lg shadow-md overflow-auto">
         <h1 class="text-3xl font-bold mb-6 text-center">Register</h1>
-        <form action="#" method="POST">
+        <form action="{{ route('register.store') }}" method="POST">
             @csrf
-
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Full Name</label>
                 <input
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="name" type="text" placeholder="Enter your full name" required>
+                    name="name" type="text" placeholder="Enter your full name" required>
             </div>
 
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Email</label>
                 <input
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="email" type="email" placeholder="Enter your email" required>
+                    name="email" type="email" placeholder="Enter your email" required>
             </div>
 
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="address">Address</label>
                 <textarea
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="address" rows="3" placeholder="Enter your address" required></textarea>
+                    name="address" rows="3" placeholder="Enter your address" required></textarea>
             </div>
 
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">Phone Number</label>
                 <input
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="phone" type="tel" placeholder="Enter your phone number" required>
+                    name="phone" type="tel" placeholder="Enter your phone number" type="numeric" required>
             </div>
 
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Password</label>
                 <input
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                    id="password" type="password" placeholder="Enter your password" required>
+                    name="password" type="password" placeholder="Enter your password" required>
             </div>
 
             <div class="mb-6">
@@ -47,7 +46,7 @@
                     Password</label>
                 <input
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                    id="password_confirmation" type="password" placeholder="Confirm your password" required>
+                    name="password_confirmation" type="password" placeholder="Confirm your password" required>
             </div>
 
             <div class="flex items-center justify-center">

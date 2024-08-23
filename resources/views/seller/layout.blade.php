@@ -35,7 +35,7 @@
 
             <div class="relative">
                 <button id="user-menu-button" class="flex items-center focus:outline-none">
-                    <span class="mr-2 font-bold text-gray-800 hover:text-gray-400">John Doe</span>
+                    <span class="mr-2 font-bold text-gray-800 hover:text-gray-400">{{ Auth::user()->name }}</span>
                     <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center profile-icon p-1">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -48,11 +48,14 @@
                 <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
                     <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300">Profile</a>
                     <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300">Settings</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300">Logout</a>
+                    <form action="{{ route('logout') }}" method="POST" class="block px-4 py-2 hover:bg-gray-300">
+                        @csrf
+                        <button type="submit" class="w-full text-left text-sm text-gray-700">Logout</button>
+                    </form>
                 </div>
             </div>
         </header>
-        <main class="flex-1 bg-white p-4">
+        <main class="flex-1 bg-white p-4 overflow-auto">
             @yield('content')
         </main>
     </div>
