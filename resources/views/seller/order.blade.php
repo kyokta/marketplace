@@ -105,29 +105,29 @@
 
 @push('scripts')
 <script>
-$(document).ready(function() {
-    $('.view-details').on('click', function(e) {
-        e.preventDefault();
-        var checkoutId = $(this).data('order-id');
-        var url = `{{ route('seller.detailOrder', ':id') }}`.replace(':id', checkoutId);
+    $(document).ready(function() {
+        $('.view-details').on('click', function(e) {
+            e.preventDefault();
+            var checkoutId = $(this).data('order-id');
+            var url = `{{ route('seller.detailOrder', ':id') }}`.replace(':id', checkoutId);
 
-        $.ajax({
-            url: url,
-            method: 'GET',
-            success: function(response) {
-                var productTableBody = '';
-                $('#statusOrder').val(response.status);
-                $('#idCheckout').val(checkoutId)
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function(response) {
+                    var productTableBody = '';
+                    $('#statusOrder').val(response.status);
+                    $('#idCheckout').val(checkoutId)
 
-                if (response.status === 'completed') {
-                    $('#statusOrder').prop('disabled', true);
-                    $('#saveChangesBtn').hide();
-                } else {
-                    $('#saveChangesBtn').show();
-                }
+                    if (response.status === 'completed') {
+                        $('#statusOrder').prop('disabled', true);
+                        $('#saveChangesBtn').hide();
+                    } else {
+                        $('#saveChangesBtn').show();
+                    }
 
-                response.orders.forEach(function(detailOrder) {
-                    productTableBody += `
+                    response.orders.forEach(function(detailOrder) {
+                        productTableBody += `
                     <tr class="text-center border-b">
                         <td class="py-2 px-4">${detailOrder.products.name}</td>
                         <td class="py-2 px-4">${detailOrder.quantity}</td>
@@ -135,56 +135,56 @@ $(document).ready(function() {
                         <td class="py-2 px-4">${detailOrder.total_price}</td>
                     </tr>
                 `;
-                });
+                    });
 
-                $('#productTableBody').html(productTableBody);
-                $('#detailOrderModal').removeClass('hidden').addClass('flex');
-            },
-            error: function() {
-                alert('Failed to retrieve order details.');
-            }
+                    $('#productTableBody').html(productTableBody);
+                    $('#detailOrderModal').removeClass('hidden').addClass('flex');
+                },
+                error: function() {
+                    alert('Failed to retrieve order details.');
+                }
+            });
+        });
+
+
+        $('#closeDetailModal, #cancelDetailBtn').on('click', function() {
+            $('#detailOrderModal').addClass('hidden');
+            $('#detailOrderModal').removeClass('flex');
+        });
+
+        $('#saveChangesBtn').on('click', function() {
+            var status = $('#statusOrder').val();
+            var checkoutId = $('#idCheckout').val();
+            var url = `{{ route('seller.updateOrder', ':id') }}`.replace(':id', checkoutId);
+
+            $.ajax({
+                url: url,
+                method: 'PUT',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    status: status
+                },
+                success: function(response) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Order status updated successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        $('#detailOrderModal').addClass('hidden').removeClass('flex');
+                        location.reload();
+                    });
+                },
+                error: function(response) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to update status.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
         });
     });
-
-
-    $('#closeDetailModal, #cancelDetailBtn').on('click', function() {
-        $('#detailOrderModal').addClass('hidden');
-        $('#detailOrderModal').removeClass('flex');
-    });
-
-    $('#saveChangesBtn').on('click', function() {
-        var status = $('#statusOrder').val();
-        var checkoutId = $('#idCheckout').val();
-        var url = `{{ route('seller.updateOrder', ':id') }}`.replace(':id', checkoutId);
-
-        $.ajax({
-            url: url,
-            method: 'PUT',
-            data: {
-                _token: "{{ csrf_token() }}",
-                status: status
-            },
-            success: function(response) {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Order status updated successfully.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    $('#detailOrderModal').addClass('hidden').removeClass('flex');
-                    location.reload();
-                });
-            },
-            error: function(response) {
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Failed to update status.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
-        });
-    });
-});
 </script>
 @endpush

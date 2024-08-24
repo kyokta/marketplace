@@ -3,9 +3,8 @@
 @section('content')
 <div class="container mx-auto p-4">
     <div class="text-center mb-6">
-        <h1 class="text-4xl font-bold text-gray-800 mb-2">Welcome to Our Marketplace</h1>
-        <p class="text-lg text-gray-600">Find the best products for your needs. Use the search bar to explore our wide
-            range of items.</p>
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">Welcome to Our M-Place</h1>
+        <p class="text-lg text-gray-600">M-Place: Your Gateway to Great Finds</p>
     </div>
     <form action="{{ route('home.dashboard') }}" method="GET" class="mb-6">
         <div class="flex flex-row gap-2">
@@ -87,118 +86,118 @@
 
 @push('scripts')
 <script>
-$(document).ready(function() {
-    let currentProductId = null;
+    $(document).ready(function() {
+        let currentProductId = null;
 
-    $('.openModal').on('click', function(e) {
-        e.preventDefault();
+        $('.openModal').on('click', function(e) {
+            e.preventDefault();
 
-        currentProductId = $(this).data('product-id');
-        const productName = $(this).data('product-name');
-        const productCategory = $(this).data('product-category');
-        const productStock = $(this).data('product-stock');
-        const productSeller = $(this).data('product-seller');
-        const productDescription = $(this).data('product-description');
-        const productImage = $(this).data('product-image') || 'https://via.placeholder.com/300';
+            currentProductId = $(this).data('product-id');
+            const productName = $(this).data('product-name');
+            const productCategory = $(this).data('product-category');
+            const productStock = $(this).data('product-stock');
+            const productSeller = $(this).data('product-seller');
+            const productDescription = $(this).data('product-description');
+            const productImage = $(this).data('product-image') || 'https://via.placeholder.com/300';
 
-        $('#modalProductName').text(productName);
-        $('#modalProductCategory').text(`Category : ${productCategory}`);
-        $('#modalProductSeller').text(`Seller : ${productSeller}`);
-        $('#modalProductStock').text(`Stock: ${productStock}`);
-        $('#modalProductDescription').text(productDescription);
-        $('#modalProductImageContainer').css('background-image', `url(${productImage})`);
+            $('#modalProductName').text(productName);
+            $('#modalProductCategory').text(`Category : ${productCategory}`);
+            $('#modalProductSeller').text(`Seller : ${productSeller}`);
+            $('#modalProductStock').text(`Stock: ${productStock}`);
+            $('#modalProductDescription').text(productDescription);
+            $('#modalProductImageContainer').css('background-image', `url(${productImage})`);
 
-        const addToCartBtn = $('.addToCartBtn');
-        if (productStock <= 0) {
-            addToCartBtn.prop('disabled', true);
-            addToCartBtn.removeClass('bg-gray-700 hover:bg-gray-600').addClass('bg-gray-300');
-        } else {
-            addToCartBtn.prop('disabled', false);
-            addToCartBtn.removeClass('bg-gray-300 hover:bg-gray-600').addClass('bg-gray-700');
-        }
+            const addToCartBtn = $('.addToCartBtn');
+            if (productStock <= 0) {
+                addToCartBtn.prop('disabled', true);
+                addToCartBtn.removeClass('bg-gray-700 hover:bg-gray-600').addClass('bg-gray-300');
+            } else {
+                addToCartBtn.prop('disabled', false);
+                addToCartBtn.removeClass('bg-gray-300 hover:bg-gray-600').addClass('bg-gray-700');
+            }
 
-        $('#detailProduct').addClass('flex');
-        $('#detailProduct').removeClass('hidden');
+            $('#detailProduct').addClass('flex');
+            $('#detailProduct').removeClass('hidden');
+        });
+
+        $('.closeModal').on('click', function(e) {
+            e.preventDefault();
+            $('#detailProduct').addClass('hidden');
+            $('#detailProduct').removeClass('flex');
+        });
+
+        $('#decreaseQuantity').on('click', function() {
+            let quantity = parseInt($('#productQuantity').val());
+            if (quantity > 1) {
+                $('#productQuantity').val(quantity - 1);
+            }
+        });
+
+        $('#increaseQuantity').on('click', function() {
+            let quantity = parseInt($('#productQuantity').val());
+            $('#productQuantity').val(quantity + 1);
+        });
+
+        $('#detailProduct').on('click', function(e) {
+            if ($(e.target).is('#detailProduct')) {
+                $(this).addClass('hidden');
+            }
+        });
+
+        $('.addToCartBtn').on('click', function(e) {
+            e.preventDefault();
+
+            if (currentProductId !== null) {
+                const quantity = parseInt($('#productQuantity').val());
+
+                $.ajax({
+                    url: '{{ route("cart.store") }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        product_id: currentProductId,
+                        quantity: quantity
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: 'Item added to cart!',
+                            text: 'The item has been successfully added to your shopping cart.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            $('#detailProduct').addClass('hidden');
+                            $('#detailProduct').removeClass('flex');
+                            $('#productQuantity').val(1);
+                        });
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            title: 'Failed to add item to cart!',
+                            text: 'There was a problem adding the item to your shopping cart. Please try again.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            $('#detailProduct').addClass('hidden');
+                            $('#detailProduct').removeClass('flex');
+                            $('#productQuantity').val(1);
+                        });
+                    }
+                });
+            } else {
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: 'No product selected!',
+                    text: 'Please select a product to add to your cart.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
     });
-
-    $('.closeModal').on('click', function(e) {
-        e.preventDefault();
-        $('#detailProduct').addClass('hidden');
-        $('#detailProduct').removeClass('flex');
-    });
-
-    $('#decreaseQuantity').on('click', function() {
-        let quantity = parseInt($('#productQuantity').val());
-        if (quantity > 1) {
-            $('#productQuantity').val(quantity - 1);
-        }
-    });
-
-    $('#increaseQuantity').on('click', function() {
-        let quantity = parseInt($('#productQuantity').val());
-        $('#productQuantity').val(quantity + 1);
-    });
-
-    $('#detailProduct').on('click', function(e) {
-        if ($(e.target).is('#detailProduct')) {
-            $(this).addClass('hidden');
-        }
-    });
-
-    $('.addToCartBtn').on('click', function(e) {
-        e.preventDefault();
-
-        if (currentProductId !== null) {
-            const quantity = parseInt($('#productQuantity').val());
-
-            $.ajax({
-                url: '{{ route("cart.store") }}',
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    product_id: currentProductId,
-                    quantity: quantity
-                },
-                success: function(response) {
-                    Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        title: 'Item added to cart!',
-                        text: 'The item has been successfully added to your shopping cart.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        $('#detailProduct').addClass('hidden');
-                        $('#detailProduct').removeClass('flex');
-                        $('#productQuantity').val(1);
-                    });
-                },
-                error: function(xhr) {
-                    Swal.fire({
-                        position: "center",
-                        icon: "error",
-                        title: 'Failed to add item to cart!',
-                        text: 'There was a problem adding the item to your shopping cart. Please try again.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        $('#detailProduct').addClass('hidden');
-                        $('#detailProduct').removeClass('flex');
-                        $('#productQuantity').val(1);
-                    });
-                }
-            });
-        } else {
-            Swal.fire({
-                position: "center",
-                icon: "error",
-                title: 'No product selected!',
-                text: 'Please select a product to add to your cart.',
-                showConfirmButton: false,
-                timer: 1500
-            });
-        }
-    });
-});
 </script>
 @endpush

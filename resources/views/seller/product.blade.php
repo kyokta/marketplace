@@ -197,215 +197,215 @@
 
 @push('scripts')
 <script>
-$(document).ready(function() {
-    let deleteFormAction;
+    $(document).ready(function() {
+        let deleteFormAction;
 
-    $('#openModal').on('click', function(e) {
-        e.preventDefault();
-        $('#productModal').addClass('flex');
-        $('#productModal').removeClass('hidden');
-    });
-
-    $('.closeModal').on('click', function(e) {
-        e.preventDefault();
-        $('#productModal').addClass('hidden').removeClass('flex');
-        $('#editProductModal').addClass('hidden').removeClass('flex');
-    });
-
-    $('#formAddProduct').on('submit', function(e) {
-        e.preventDefault();
-
-        let isValid = true;
-        const productName = $('#productName').val().trim();
-        const productCategory = $('#productCategory').val();
-        const productPrice = $('#productPrice').val().trim();
-        const productStock = $('#productStock').val().trim();
-        const productImage = $('#productImage').val();
-        const productDescription = $('#productDescription').val().trim();
-
-        if (productName === '') {
-            isValid = false;
-            Swal.fire('Validation Error', 'Please enter a product name.', 'error');
-        } else if (productCategory === '') {
-            isValid = false;
-            Swal.fire('Validation Error', 'Please select a category.', 'error');
-        } else if (productPrice === '' || productPrice <= 0) {
-            isValid = false;
-            Swal.fire('Validation Error', 'Please enter a valid price.', 'error');
-        } else if (productStock === '' || productStock <= 0) {
-            isValid = false;
-            Swal.fire('Validation Error', 'Please enter a valid stock quantity.', 'error');
-        } else if (productImage === '') {
-            isValid = false;
-            Swal.fire('Validation Error', 'Please upload a product image.', 'error');
-        } else if (productDescription === '') {
-            isValid = false;
-            Swal.fire('Validation Error', 'Please enter a product description.', 'error');
-        }
-
-        if (isValid) {
-            const formData = new FormData(this);
-
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Product Added!',
-                        text: 'The product has been successfully added.',
-                        timer: 1500,
-                        showConfirmButton: false
-                    }).then(() => {
-                        location.reload();
-                    });
-                },
-                error: function(xhr) {
-                    Swal.fire(
-                        'Failed!',
-                        'There was an issue adding the product.',
-                        'error'
-                    );
-                }
-            });
-        }
-    });
-
-    $('.btnEditProduct').on('click', function(e) {
-        e.preventDefault();
-        const productId = $(this).data('id');
-        const route = `{{ route('seller.detailProduct', ':id') }}`.replace(':id', productId);
-
-        $.ajax({
-            url: route,
-            type: 'GET',
-            success: function(response) {
-                $('#editProductModal').removeClass('hidden').addClass('flex');
-
-                $('#editProductId').val(response.id);
-                $('#editProductName').val(response.name);
-                $('#editProductCategory').val(response.category_id);
-                $('#editProductPrice').val(response.price);
-                $('#editProductStock').val(response.stock);
-                $('#editProductDescription').val(response.description);
-
-                if (response.image) {
-                    $('#editProductImagePreview').attr('src',
-                        `{{ asset('storage') }}/${response.image}`).removeClass(
-                        'hidden');
-                    $('#editProductImagePreviewWrapper').removeClass('hidden');
-                    $('#editProductImageRemove').val(false);
-                } else {
-                    $('#editProductImagePreviewWrapper').addClass('hidden');
-                    $('#editProductImageRemove').val(true);
-                }
-
-                $('#formEditProduct').attr('action',
-                    `{{ route('seller.updateProduct', ':id') }}`.replace(':id', response
-                        .id));
-            },
-            error: function(xhr) {
-                Swal.fire(
-                    'Failed!',
-                    'There was an issue retrieving the product data.',
-                    'error'
-                );
-            }
+        $('#openModal').on('click', function(e) {
+            e.preventDefault();
+            $('#productModal').addClass('flex');
+            $('#productModal').removeClass('hidden');
         });
-    });
 
-    $('#editProductImageRemoveBtn').on('click', function(e) {
-        e.preventDefault();
-        $('#editProductImagePreviewWrapper').addClass('hidden');
-        $('#editProductImageRemove').val(true);
-    });
-
-    $('#formEditProduct').on('submit', function(e) {
-        e.preventDefault();
-
-        const form = $(this);
-        const formData = new FormData(this);
-
-        $.ajax({
-            url: form.attr('action') || `{{ route('seller.updateProduct', ['id' => ':id']) }}`
-                .replace(':id', $('#editProductId').val()),
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Product updated successfully.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    location.reload()
-                });
-            },
-            error: function(xhr) {
-                const errors = xhr.responseJSON.errors;
-                let errorMessage = 'There was an issue updating the product.';
-
-                if (errors) {
-                    errorMessage = Object.values(errors).flat().join('<br>');
-                }
-
-                Swal.fire({
-                    title: 'Error!',
-                    html: errorMessage,
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
+        $('.closeModal').on('click', function(e) {
+            e.preventDefault();
+            $('#productModal').addClass('hidden').removeClass('flex');
+            $('#editProductModal').addClass('hidden').removeClass('flex');
         });
-    });
 
-    $('.deleteBtn').on('click', function(e) {
-        e.preventDefault();
-        const productId = $(this).data('id');
-        deleteFormAction = '{{ route("seller.deleteProduct", ":id") }}'.replace(':id', productId);
+        $('#formAddProduct').on('submit', function(e) {
+            e.preventDefault();
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
+            let isValid = true;
+            const productName = $('#productName').val().trim();
+            const productCategory = $('#productCategory').val();
+            const productPrice = $('#productPrice').val().trim();
+            const productStock = $('#productStock').val().trim();
+            const productImage = $('#productImage').val();
+            const productDescription = $('#productDescription').val().trim();
+
+            if (productName === '') {
+                isValid = false;
+                Swal.fire('Validation Error', 'Please enter a product name.', 'error');
+            } else if (productCategory === '') {
+                isValid = false;
+                Swal.fire('Validation Error', 'Please select a category.', 'error');
+            } else if (productPrice === '' || productPrice <= 0) {
+                isValid = false;
+                Swal.fire('Validation Error', 'Please enter a valid price.', 'error');
+            } else if (productStock === '' || productStock <= 0) {
+                isValid = false;
+                Swal.fire('Validation Error', 'Please enter a valid stock quantity.', 'error');
+            } else if (productImage === '') {
+                isValid = false;
+                Swal.fire('Validation Error', 'Please upload a product image.', 'error');
+            } else if (productDescription === '') {
+                isValid = false;
+                Swal.fire('Validation Error', 'Please enter a product description.', 'error');
+            }
+
+            if (isValid) {
+                const formData = new FormData(this);
+
                 $.ajax({
-                    url: deleteFormAction,
+                    url: $(this).attr('action'),
                     type: 'POST',
-                    data: {
-                        _method: 'DELETE',
-                        _token: '{{ csrf_token() }}'
-                    },
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     success: function(response) {
-                        Swal.fire(
-                            'Deleted!',
-                            'The product has been deleted.',
-                            'success'
-                        ).then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Product Added!',
+                            text: 'The product has been successfully added.',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
                             location.reload();
                         });
                     },
                     error: function(xhr) {
                         Swal.fire(
                             'Failed!',
-                            'There was an issue deleting the product.',
+                            'There was an issue adding the product.',
                             'error'
                         );
                     }
                 });
             }
         });
+
+        $('.btnEditProduct').on('click', function(e) {
+            e.preventDefault();
+            const productId = $(this).data('id');
+            const route = `{{ route('seller.detailProduct', ':id') }}`.replace(':id', productId);
+
+            $.ajax({
+                url: route,
+                type: 'GET',
+                success: function(response) {
+                    $('#editProductModal').removeClass('hidden').addClass('flex');
+
+                    $('#editProductId').val(response.id);
+                    $('#editProductName').val(response.name);
+                    $('#editProductCategory').val(response.category_id);
+                    $('#editProductPrice').val(response.price);
+                    $('#editProductStock').val(response.stock);
+                    $('#editProductDescription').val(response.description);
+
+                    if (response.image) {
+                        $('#editProductImagePreview').attr('src',
+                            `{{ asset('storage') }}/${response.image}`).removeClass(
+                            'hidden');
+                        $('#editProductImagePreviewWrapper').removeClass('hidden');
+                        $('#editProductImageRemove').val(false);
+                    } else {
+                        $('#editProductImagePreviewWrapper').addClass('hidden');
+                        $('#editProductImageRemove').val(true);
+                    }
+
+                    $('#formEditProduct').attr('action',
+                        `{{ route('seller.updateProduct', ':id') }}`.replace(':id', response
+                            .id));
+                },
+                error: function(xhr) {
+                    Swal.fire(
+                        'Failed!',
+                        'There was an issue retrieving the product data.',
+                        'error'
+                    );
+                }
+            });
+        });
+
+        $('#editProductImageRemoveBtn').on('click', function(e) {
+            e.preventDefault();
+            $('#editProductImagePreviewWrapper').addClass('hidden');
+            $('#editProductImageRemove').val(true);
+        });
+
+        $('#formEditProduct').on('submit', function(e) {
+            e.preventDefault();
+
+            const form = $(this);
+            const formData = new FormData(this);
+
+            $.ajax({
+                url: form.attr('action') || `{{ route('seller.updateProduct', ['id' => ':id']) }}`
+                    .replace(':id', $('#editProductId').val()),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Product updated successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        location.reload()
+                    });
+                },
+                error: function(xhr) {
+                    const errors = xhr.responseJSON.errors;
+                    let errorMessage = 'There was an issue updating the product.';
+
+                    if (errors) {
+                        errorMessage = Object.values(errors).flat().join('<br>');
+                    }
+
+                    Swal.fire({
+                        title: 'Error!',
+                        html: errorMessage,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+
+        $('.deleteBtn').on('click', function(e) {
+            e.preventDefault();
+            const productId = $(this).data('id');
+            deleteFormAction = '{{ route("seller.deleteProduct", ":id") }}'.replace(':id', productId);
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: deleteFormAction,
+                        type: 'POST',
+                        data: {
+                            _method: 'DELETE',
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            Swal.fire(
+                                'Deleted!',
+                                'The product has been deleted.',
+                                'success'
+                            ).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function(xhr) {
+                            Swal.fire(
+                                'Failed!',
+                                'There was an issue deleting the product.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        });
     });
-});
 </script>
 @endpush

@@ -5,7 +5,7 @@
     <!-- sidebar -->
     <aside id="sidebar" class="h-full w-[20%] bg-gray-800 p-3 text-white absolute">
         <div class="logo-container p-2 flex items-center justify-center">
-            <span class="text-xl font-bold">Marketplace</span>
+            <span class="text-xl font-bold">M-Place</span>
         </div>
         <nav class="px-4 py-2 space-y-2">
             <a href="{{ route('seller.dashboard') }}" class="flex items-center py-2 px-4 rounded-xl hover:bg-gray-700">

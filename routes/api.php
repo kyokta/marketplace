@@ -25,7 +25,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [ProductController::class, 'dashboard'])->name('dashboard');
     
-    Route::get('/product', [ProductController::class, 'getProduct'])->name('allProduct');
+    Route::get('/products', [ProductController::class, 'getAllProduct'])->name('allProduct');
+    Route::get('/product', [ProductController::class, 'getProductByUser'])->name('productByUser');
     Route::get('/product/{id}', [ProductController::class, 'getProductById'])->name('productById');
     Route::delete('/product/{id}', [ProductController::class, 'deleteProduct'])->name('deleteProduct');
     Route::post('/product', [ProductController::class, 'storeProduct'])->name('storeProduct');
