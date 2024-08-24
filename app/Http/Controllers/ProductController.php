@@ -54,7 +54,6 @@ class ProductController extends Controller
         return view('seller.dashboard', compact('data'));
     }
 
-
     public function getProduct()
     {
         $categories = Category::all();

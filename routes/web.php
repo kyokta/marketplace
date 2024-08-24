@@ -26,9 +26,8 @@ Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/register', [AuthController::class, 'registerStore'])->name('register.store');
 
 Route::middleware(['auth'])->group(function () {
-    Route::prefix('seller')->name('seller.')->group(function () {
+    Route::middleware(['seller'])->prefix('seller')->name('seller.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('dashboard');
-        Route::get('/product', [ProductController::class, 'getProduct'])->name('product');
         Route::get('/product', [ProductController::class, 'getProduct'])->name('product');
         Route::get('/product/{id}', [ProductController::class, 'detailProduct'])->name('detailProduct');
         Route::post('/product', [ProductController::class, 'storeProduct'])->name('storeProduct');

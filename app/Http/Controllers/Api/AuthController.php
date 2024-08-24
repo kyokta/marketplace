@@ -21,7 +21,7 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'success' => false,
+                'status' => 'Failed',
                 'message' => 'Validation error',
                 'data' => $validator->errors()
             ], 422);
@@ -36,7 +36,7 @@ class AuthController extends Controller
         $success['token'] = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'success' => true,
+            'status' => 'Success',
             'message' => 'Registration successful',
             'data' => $success
         ]);
@@ -51,7 +51,7 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'success' => false,
+                'status' => 'Failed',
                 'message' => 'Validation error',
                 'data' => $validator->errors()
             ], 422);
@@ -64,13 +64,13 @@ class AuthController extends Controller
             $success['token'] = $auth->createToken('auth_token')->plainTextToken;
 
             return response()->json([
-                'success' => true,
+                'status' => 'Success',
                 'message' => 'Login successful',
                 'data' => $success
             ]);
         } else {
             return response()->json([
-                'success' => false,
+                'status' => 'Failed',
                 'message' => 'Invalid email or password',
                 'data' => null
             ], 401);
@@ -83,7 +83,7 @@ class AuthController extends Controller
 
         if (!$user) {
             return response()->json([
-                'success' => false,
+                'status' => 'Failed',
                 'message' => 'Invalid or expired token'
             ], 401);
         }
@@ -91,7 +91,7 @@ class AuthController extends Controller
         $user->currentAccessToken()->delete();
 
         return response()->json([
-            'success' => true,
+            'status' => 'Success',
             'message' => 'Logout successful'
         ]);
     }
