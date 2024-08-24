@@ -67,7 +67,40 @@ class ProductController extends Controller
         }
     }
 
-    public function getProduct(Request $request)
+    public function getAllProduct(Request $request)
+    {
+        try {
+            $keyword = $request->input('keyword');
+
+            $query = Product::query();
+
+            if ($keyword) {
+                $query->where(function ($subQuery) use ($keyword) {
+                    $subQuery->where('name', 'like', "%{$keyword}%")
+                        ->orWhere('description', 'like', "%{$keyword}%");
+                });
+            }
+
+            $products = $query->get()->map(function ($product) {
+                $product->image = asset('storage/' . $product->image);
+                return $product;
+            });
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Products have been successfully retrieved.',
+                'data' => $products
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Failed to retrieve products.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getProductByUser(Request $request)
     {
         try {
             $userId = auth()->id();

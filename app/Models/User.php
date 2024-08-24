@@ -45,7 +45,7 @@ class User extends Authenticatable
 
     public function detail()
     {
-        return $this->hasOne(DetailUser::class, 'user_id', 'id');
+        return $this->hasOne(DetailUser::class, 'user_id');
     }
 
     public function products()

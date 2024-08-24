@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="flex items-center justify-center h-full w-full bg-gray-100">
-    <div class="w-3/4 max-w-md bg-white p-8 rounded-lg">
-        <h1 class="text-3xl font-bold mb-6 text-center">Marketplace</h1>
+    <div class="w-full max-w-md bg-white p-8 rounded-lg">
+        <h1 class="text-3xl font-bold mb-6 text-center">Login</h1>
         @if (session('success'))
         <div class="mb-4 text-center">
             <p class="text-green-500 text-sm">{{ session('success') }}</p>

@@ -1,10 +1,10 @@
 @extends('auth.layout')
 
 @section('content')
-<div class="h-full w-full flex items-center justify-center bg-gray-100">
-    <div class="w-[80%] max-h-[80%] bg-white p-8 rounded-lg shadow-md overflow-auto">
+<div class="flex items-center justify-center h-full w-full bg-gray-100">
+    <div class="w-full max-w-md max-h-[60%] bg-white p-8 rounded-lg shadow-md overflow-auto">
         <h1 class="text-3xl font-bold mb-6 text-center">Register</h1>
-        <form action="{{ route('register.store') }}" method="POST">
+        <form action="{{ route('register.store') }}" method="POST" class="overflow-auto">
             @csrf
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Full Name</label>

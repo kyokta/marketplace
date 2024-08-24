@@ -3,7 +3,7 @@
 @section('body')
 <header class="fixed top-0 left-0 w-full bg-gray-800 text-white flex items-center justify-between py-4 px-10 z-50">
     <div class="flex items-center">
-        <span class="text-xl font-bold">Marketplace</span>
+        <span class="text-xl font-bold">M-Place</span>
     </div>
     <div class="flex flex-row gap-6">
         <nav class="md:flex space-x-4">
@@ -51,16 +51,16 @@
 
 @push('script')
 <script>
-$(document).ready(function() {
-    $('#user-menu-button').on('click', function() {
-        $('#user-dropdown').toggleClass('hidden');
-    });
+    $(document).ready(function() {
+        $('#user-menu-button').on('click', function() {
+            $('#user-dropdown').toggleClass('hidden');
+        });
 
-    $(document).on('click', function(event) {
-        if (!$(event.target).closest('#user-menu-button, #user-dropdown').length) {
-            $('#user-dropdown').addClass('hidden');
-        }
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('#user-menu-button, #user-dropdown').length) {
+                $('#user-dropdown').addClass('hidden');
+            }
+        });
     });
-});
 </script>
 @endpush

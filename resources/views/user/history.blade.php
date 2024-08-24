@@ -78,15 +78,15 @@
 
 @push('scripts')
 <script>
-$(document).ready(function() {
-    function openOrderDetailsModal(orderId) {
-        $.ajax({
-            url: '{{ route("history.detail", ":id") }}'.replace(':id', orderId),
-            type: 'GET',
-            success: function(response) {
-                const checkout = response.checkout;
+    $(document).ready(function() {
+        function openOrderDetailsModal(orderId) {
+            $.ajax({
+                url: '{{ route("history.detail", ":id") }}'.replace(':id', orderId),
+                type: 'GET',
+                success: function(response) {
+                    const checkout = response.checkout;
 
-                $('#orderDetailsContent').html(`
+                    $('#orderDetailsContent').html(`
                     <h3 class="text-lg font-bold mb-4">Items in Order</h3>
                     <table class="min-w-full bg-white">
                         <thead>
@@ -109,26 +109,26 @@ $(document).ready(function() {
                     <p class="mt-4 text-right"><strong>Total (IDR): </strong>${checkout.detail_checkouts.reduce((total, item) => total + (item.quantity * item.product.price), 0).toLocaleString('id-ID')}</p>
                 `);
 
-                $('#orderDetailsModal').removeClass('hidden');
-                $('#orderDetailsModal').addClass('flex');
-            },
-            error: function(xhr) {
-                console.error('Failed to fetch order details:', xhr.responseText);
-            }
+                    $('#orderDetailsModal').removeClass('hidden');
+                    $('#orderDetailsModal').addClass('flex');
+                },
+                error: function(xhr) {
+                    console.error('Failed to fetch order details:', xhr.responseText);
+                }
+            });
+        }
+
+        $('#closeModal, #closeModalBtn').on('click', function(e) {
+            e.preventDefault();
+            $('#orderDetailsModal').addClass('hidden');
+            $('#orderDetailsModal').removeClass('flex');
         });
-    }
 
-    $('#closeModal, #closeModalBtn').on('click', function(e) {
-        e.preventDefault();
-        $('#orderDetailsModal').addClass('hidden');
-        $('#orderDetailsModal').removeClass('flex');
+        $('.view-details').on('click', function(e) {
+            e.preventDefault();
+            const orderId = $(this).data('id');
+            openOrderDetailsModal(orderId);
+        });
     });
-
-    $('.view-details').on('click', function(e) {
-        e.preventDefault();
-        const orderId = $(this).data('id');
-        openOrderDetailsModal(orderId);
-    });
-});
 </script>
 @endpush

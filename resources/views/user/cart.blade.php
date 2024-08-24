@@ -71,157 +71,157 @@
 
 @push('scripts')
 <script>
-$(document).ready(function() {
-    function updateTotal() {
-        let grandTotal = 0;
+    $(document).ready(function() {
+        function updateTotal() {
+            let grandTotal = 0;
 
-        $('.quantity-input').each(function() {
-            const quantity = parseInt($(this).val());
-            const price = parseInt($(this).data('price'));
-            const cartId = $(this).data('id');
-            const total = quantity * price;
+            $('.quantity-input').each(function() {
+                const quantity = parseInt($(this).val());
+                const price = parseInt($(this).data('price'));
+                const cartId = $(this).data('id');
+                const total = quantity * price;
 
-            $(`#total-${cartId}`).text(total.toLocaleString('id-ID'));
+                $(`#total-${cartId}`).text(total.toLocaleString('id-ID'));
 
-            grandTotal += total;
+                grandTotal += total;
+            });
+
+            $('#cartTotal').text(grandTotal.toLocaleString('id-ID'));
+        }
+
+        function toggleCheckoutButton() {
+            if ($('.item-checkbox:checked').length > 0) {
+                $('#checkoutButton').prop('disabled', false);
+            } else {
+                $('#checkoutButton').prop('disabled', true);
+            }
+        }
+
+        $('.quantity-input').on('input', function() {
+            updateTotal();
         });
 
-        $('#cartTotal').text(grandTotal.toLocaleString('id-ID'));
-    }
+        $('#select-all').on('change', function() {
+            $('.item-checkbox').prop('checked', $(this).prop('checked'));
+            toggleCheckoutButton();
+        });
 
-    function toggleCheckoutButton() {
-        if ($('.item-checkbox:checked').length > 0) {
-            $('#checkoutButton').prop('disabled', false);
-        } else {
-            $('#checkoutButton').prop('disabled', true);
-        }
-    }
+        $('.item-checkbox').on('change', function() {
+            toggleCheckoutButton();
+        });
 
-    $('.quantity-input').on('input', function() {
-        updateTotal();
-    });
+        $('.deleteCartItem').on('click', function() {
+            const cartId = $(this).data('id');
 
-    $('#select-all').on('change', function() {
-        $('.item-checkbox').prop('checked', $(this).prop('checked'));
-        toggleCheckoutButton();
-    });
-
-    $('.item-checkbox').on('change', function() {
-        toggleCheckoutButton();
-    });
-
-    $('.deleteCartItem').on('click', function() {
-        const cartId = $(this).data('id');
-
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: `/cart/${cartId}`,
-                    type: 'DELETE',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            Swal.fire(
-                                'Deleted!',
-                                'Your item has been deleted.',
-                                'success'
-                            );
-                            location.reload();
-                        } else {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/cart/${cartId}`,
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Your item has been deleted.',
+                                    'success'
+                                );
+                                location.reload();
+                            } else {
+                                Swal.fire(
+                                    'Failed!',
+                                    response.message,
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function(xhr) {
                             Swal.fire(
                                 'Failed!',
-                                response.message,
+                                'There was an error deleting the item.',
                                 'error'
                             );
                         }
-                    },
-                    error: function(xhr) {
+                    });
+                }
+            });
+        });
+
+        $('#checkoutButton').on('click', function(event) {
+            event.preventDefault();
+
+            let selectedItems = [];
+            $('.item-checkbox:checked').each(function() {
+                let cartId = $(this).closest('tr').find('.quantity-input').data('id');
+                let quantity = $(this).closest('tr').find('.quantity-input').val();
+                selectedItems.push({
+                    id: cartId,
+                    quantity: quantity
+                });
+            });
+
+            if (selectedItems.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'No items selected for checkout!',
+                });
+                return;
+            }
+
+            $.ajax({
+                url: '/history/',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    items: selectedItems,
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire(
+                            'Success!',
+                            'Checkout successful!',
+                            'success'
+                        ).then(() => {
+                            location.reload()
+                        });
+                    } else {
                         Swal.fire(
                             'Failed!',
-                            'There was an error deleting the item.',
+                            response.message,
                             'error'
                         );
                     }
-                });
-            }
-        });
-    });
+                },
+                error: function(xhr) {
+                    let errorMessage = 'There was an error processing the checkout.';
 
-    $('#checkoutButton').on('click', function(event) {
-        event.preventDefault();
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        errorMessage = xhr.responseText;
+                    }
 
-        let selectedItems = [];
-        $('.item-checkbox:checked').each(function() {
-            let cartId = $(this).closest('tr').find('.quantity-input').data('id');
-            let quantity = $(this).closest('tr').find('.quantity-input').val();
-            selectedItems.push({
-                id: cartId,
-                quantity: quantity
-            });
-        });
-
-        if (selectedItems.length === 0) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'No items selected for checkout!',
-            });
-            return;
-        }
-
-        $.ajax({
-            url: '/history/',
-            type: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}',
-                items: selectedItems,
-            },
-            success: function(response) {
-                if (response.success) {
-                    Swal.fire(
-                        'Success!',
-                        'Checkout successful!',
-                        'success'
-                    ).then(() => {
-                        location.reload()
-                    });
-                } else {
                     Swal.fire(
                         'Failed!',
-                        response.message,
+                        errorMessage,
                         'error'
                     );
                 }
-            },
-            error: function(xhr) {
-                let errorMessage = 'There was an error processing the checkout.';
-
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    errorMessage = xhr.responseJSON.message;
-                } else if (xhr.responseText) {
-                    errorMessage = xhr.responseText;
-                }
-
-                Swal.fire(
-                    'Failed!',
-                    errorMessage,
-                    'error'
-                );
-            }
+            });
         });
+
+
     });
-
-
-});
 </script>
 @endpush

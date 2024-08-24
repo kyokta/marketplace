@@ -28,22 +28,17 @@ class AuthController extends Controller
                 ->withInput();
         }
 
-        $user = User::where('email', $request->email)->first();
-        if (!$user) {
-            return redirect()->route('login')->with('error', 'User tidak ditemukan.');
-        }
+        $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt([
-            'email' => $request->email,
-            'password' => $request->password
-        ])) {
-            $role = $user->detail->role;
-            
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            $role = $user->detail->role ?? 'user';
+
             if ($role == 'seller') {
                 return redirect()->route('seller.dashboard');
             } else {
                 return redirect()->route('home.dashboard');
-            } 
+            }
         } else {
             return redirect()->route('login')
                 ->withErrors(['error' => 'Kredensial yang Anda masukkan tidak valid.'])
